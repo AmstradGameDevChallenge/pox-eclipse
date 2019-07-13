@@ -14,10 +14,10 @@
 cpct_keyID INVALID_KEY = 255;
 
 typedef struct {
-   u8 agility;
-   u8 energy;
-   u8 attack;
-   u8 defense;
+   i8 agility;
+   i8 energy;
+   i8 attack;
+   i8 defense;
    const char* name;
 } character_stats;
 
