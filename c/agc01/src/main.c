@@ -82,7 +82,7 @@ void combat_state() {
     // Print stats
     print_stats(player);
     print_stats(enemy);
-    printf("a - Attack. d - Defend\r\n");
+    printf("A - Attack. D - Defend\r\n");
     player->defending = false;
     enemy->defending = false;
 
@@ -165,6 +165,7 @@ void player_explore_action(character_stats *player)
     cpct_keyID command_keys[] = {Key_Q, Key_A, Key_O, Key_P, Key_R};
     u8 command_keys_len = sizeof(command_keys)/sizeof(command_keys[0]);
     u8 energy_gained = 0;    
+    bool moved = false;
     cpct_keyID key = key_pressed(command_keys, command_keys_len);
     switch(key) {
         case(Key_R): {
@@ -172,36 +173,39 @@ void player_explore_action(character_stats *player)
             energy_gained = max(0, min(cpct_rand(), 10));
             player->energy += energy_gained;
             control_max_min_energy(player);
+            moved = false;
             break;
         }
         case (Key_Q): {
-            move_player( 0, -1);
+            moved = move_player( 0, -1);
             break;
         }
 
         case (Key_A): {
-            move_player( 0, 1);
+            moved = move_player( 0, 1);
             break;
         }
 
         case (Key_O): {
-            move_player(-1, 0);
+            moved = move_player(-1, 0);
             break;
         }
 
         case (Key_P): {
-            move_player( 1, 0);
+            moved = move_player( 1, 0);
             break;
         }
     }
 
-    println("You explore the zone...");
-    if (enemies_near()) {
-        println("And you are attacked!!!");
-        game_state = COMBAT;    
-    }
-    else {
-        println("Nothing found");
+    if (moved) {
+        println("You explore the zone...");
+        if (enemies_near()) {
+            println("And you are attacked!!!");
+            game_state = COMBAT;    
+        }
+        else {
+            println("Nothing found");
+        }
     }
 }
 
@@ -231,7 +235,7 @@ void player_action(character_stats *player, character_stats *enemy)
 void enemy_action(character_stats *player, character_stats *enemy)
 {
     // ENEMY DECIDES
-    if (cpct_rand() < 64) {
+    if (player->agility < enemy->agility && cpct_rand() < 64) {
         printf("%s defends of %s...\r\n", enemy->name, player->name );         
         enemy->defending=true;
 

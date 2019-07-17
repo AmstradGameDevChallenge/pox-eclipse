@@ -49,47 +49,55 @@ u8 zone_content(i8 x, i8 y) {
     }
 }
 
-void move_player_to(i8 pos_x, i8 pos_y) {
-    world.player_pos.x = pos_x;
-    world.player_pos.y = pos_y;
+bool move_player_to(i8 pos_x, i8 pos_y) {
+    if (pos_x != world.player_pos.x || pos_y != world.player_pos.y) {
+        world.player_pos.x = pos_x;
+        world.player_pos.y = pos_y;
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
-void move_player(i8 x_mov, i8 y_mov) {
+bool move_player(i8 x_mov, i8 y_mov) {
     i8 pos_x = world.player_pos.x;
     i8 pos_y = world.player_pos.y;
-    
+    bool moved = false;
+
     pos_x = clamp(pos_x + x_mov, MIN_X, MAX_X);
     pos_y = clamp(pos_y + y_mov, MIN_Y, MAX_Y);
 
     switch(zone_content(pos_x, pos_y)) {
         case CONTENT_EMPTY: {
-            move_player_to(pos_x, pos_y);
+            moved = move_player_to(pos_x, pos_y);
             break;
         }
         
         case CONTENT_OBSTACLE: {
-            move_player_to(pos_x, pos_y);
+            
             break;
         }
         
         case CONTENT_ITEM: {
-            move_player_to(pos_x, pos_y);
+            moved = move_player_to(pos_x, pos_y);
             break;
         }
         
         case CONTENT_ENEMY: {
-            move_player_to(pos_x, pos_y);
+            moved = move_player_to(pos_x, pos_y);
             spawn_enemy();
             break;
         }
 
         case CONTENT_CLUE: {
-            move_player_to(pos_x, pos_y);
+            moved = move_player_to(pos_x, pos_y);
             break;
         }
 
     }
 
     --world.player.energy;
+    return( moved );
     
 }

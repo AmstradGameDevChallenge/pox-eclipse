@@ -33,8 +33,8 @@ void remove_enemy( void );
 
 u8 zone_content(i8 x, i8 y);
 
-void move_player(i8 x_mov, i8 y_mov);
-void move_player_to(i8 pos_x, i8 pos_y);
+bool move_player(i8 x_mov, i8 y_mov);
+bool move_player_to(i8 pos_x, i8 pos_y);
 
 extern game_world world;
 

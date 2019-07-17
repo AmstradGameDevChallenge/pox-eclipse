@@ -27,5 +27,5 @@ void init_enemy( character_stats* character ) {
 }
 
 void print_stats( character_stats* character ) {
-    printf("%s [%d] (a%d) (d%d)\r\n", character->name, character->energy, character->attack, character->defense);
+    printf("Name: %s (HP:%d) (A:%d) (D:%d)\r\n", character->name, character->energy, character->attack, character->defense);
 }
