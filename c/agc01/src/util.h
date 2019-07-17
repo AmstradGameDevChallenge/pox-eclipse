@@ -3,7 +3,7 @@
 
 #include <cpctelera.h>
 
-const char* NEW_LINE = "\r\n";
+
 
 // some basic comparisons
 i8 max(i8, i8);

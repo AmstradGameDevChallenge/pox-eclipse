@@ -17,8 +17,8 @@ typedef enum game_states {
     START_MENU     = 0,
     COMBAT         = 1,
     EXPLORATION    = 2,
-    ENDED       = 3
-} ;
+    ENDED          = 3
+};
  
 enum game_states game_state;
 void start_menu_state(void);
@@ -26,6 +26,7 @@ void combat_state(void);
 void exploration_state(void);
 void endgame_state(void);
 
+void print_header(void);
 void print_splash(void);
 
 void player_action(character_stats *player, character_stats *enemy);
@@ -37,7 +38,7 @@ void control_max_min_energy(character_stats *character);
 
 
 void main(void) {          
-    game_state = 0;
+    game_state = START_MENU;
     while (true) {
         switch( game_state ) {
             case START_MENU: {                
@@ -86,7 +87,7 @@ void combat_state() {
     enemy->defending = false;
 
     if (player->agility > enemy->agility){
-        println("Your agility allows you act before");
+        println("Your agility allows you act earlier!");
         player_action(player, enemy);
         enemy_action(player, enemy);                
     }
@@ -115,18 +116,21 @@ void exploration_state() {
 
     // Print stats
     putchar(12);
+    print_header();
     print_stats(player);    
-    printf("m - Move. r - Rest. \r\n");
+    printf("O, P, Q, A - Move. R - Rest. \r\n");
 
     player_explore_action(player);
 }
 
 void endgame_state() {
     println("Game ended, will you play again?");
-    destroy_world();
     game_state = START_MENU;
 }
 
+void print_header() {
+    printf("Location: %d %d\r\n", world.player_pos.x, world.player_pos.y);
+}
 
 
 void print_splash()
@@ -153,17 +157,15 @@ void print_splash()
 void println(char *string)
 {
     printf(string); 
-    printf(NEW_LINE);
+    printf("\r\n");
 }
 
 void player_explore_action(character_stats *player)
 {
-    cpct_keyID command_keys[] = {Key_M, Key_R};
-    u8 command_keys_len = 2;
+    cpct_keyID command_keys[] = {Key_Q, Key_A, Key_O, Key_P, Key_R};
+    u8 command_keys_len = sizeof(command_keys)/sizeof(command_keys[0]);
     u8 energy_gained = 0;    
-    cpct_keyID key;
-
-    key = key_pressed(command_keys, command_keys_len);
+    cpct_keyID key = key_pressed(command_keys, command_keys_len);
     switch(key) {
         case(Key_R): {
             println("You rest for some time...");
@@ -172,16 +174,34 @@ void player_explore_action(character_stats *player)
             control_max_min_energy(player);
             break;
         }
-        case (Key_M): {
-            println("You explore the zone...");
-            if (cpct_rand()>100) {
-                spawn_enemy();
-                printf("And find %s!!!\r\n", get_enemy()->name);
-                
-                game_state = COMBAT;
-            }
+        case (Key_Q): {
+            move_player( 0, -1);
             break;
         }
+
+        case (Key_A): {
+            move_player( 0, 1);
+            break;
+        }
+
+        case (Key_O): {
+            move_player(-1, 0);
+            break;
+        }
+
+        case (Key_P): {
+            move_player( 1, 0);
+            break;
+        }
+    }
+
+    println("You explore the zone...");
+    if (enemies_near()) {
+        println("And you are attacked!!!");
+        game_state = COMBAT;    
+    }
+    else {
+        println("Nothing found");
     }
 }
 

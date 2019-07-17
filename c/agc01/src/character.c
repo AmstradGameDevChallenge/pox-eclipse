@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "character.h"
+#include "util.h"
 
 bool is_dead( character_stats *stats ) {
     return stats->energy <= 0;
@@ -17,8 +18,8 @@ void init_player( character_stats* character ) {
 }
 
 void init_enemy( character_stats* character ) {
-    character->agility  = 50;
-    character->energy   = 90;
+    character->agility  = clamp(cpct_rand(), 10, 80);
+    character->energy   = clamp(cpct_rand(), 50, 90);
     character->attack   = 20;
     character->defense  = 10;
     strcpy(character->name, "Mutard");
