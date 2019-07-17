@@ -102,13 +102,14 @@ void combat_state() {
         fighting = false;
         game_state = ENDED;
     }
-    
-    if ( is_dead(enemy) ) {
-        println("Your last blow makes your enemy\r\nwalk back some steps.\r\nThen falls dead on the floor.");                
-        fighting = false;
-        remove_enemy();
-        game_state = EXPLORATION;
-    }        
+    else {
+        if ( is_dead(enemy) ) {
+            println("Your last blow makes your enemy\r\nwalk back some steps.\r\nThen falls dead on the floor.");                
+            fighting = false;
+            remove_enemy();
+            game_state = EXPLORATION;
+        }     
+    }   
 }
 
 void exploration_state() {
