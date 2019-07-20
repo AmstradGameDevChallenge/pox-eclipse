@@ -1,7 +1,9 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "world.h"
 #include "character.h"
 #include "util.h"
+
 
 // World dimensions
 const i8 MIN_Y = -12;
@@ -16,6 +18,10 @@ void init_world() {
     world.player_pos.x=0;
     world.player_pos.y=0;
     world.enemies_count = 0;
+    // Here we are going to populate our world
+    // for(int enemy_count = 0 ; enemy_count < MAX_ENEMIES; ++enemy_count ) {
+    //     printf("Spawning enemy %d\r\n", enemy_count);        
+    // }
 }
 
 bool enemies_near(void) {
@@ -40,12 +46,20 @@ character_stats *get_enemy() {
 }
 
 u8 zone_content(i8 x, i8 y) {
-    if (cpct_rand()>200) {
-        spawn_enemy();
-        return CONTENT_ENEMY;
-    }
+    if (x == MAX_X-1 || 
+        x == MIN_X+1 ||
+        y == MAX_Y-1 ||
+        y == MAX_Y+1) {
+            return CONTENT_OBSTACLE;
+        } 
     else {
-        return CONTENT_EMPTY;
+        if (cpct_rand()>200) {
+            spawn_enemy();
+            return CONTENT_ENEMY;
+        }
+        else {
+            return CONTENT_EMPTY;
+        }
     }
 }
 
