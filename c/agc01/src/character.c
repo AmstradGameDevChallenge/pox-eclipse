@@ -19,9 +19,9 @@ void init_player( character_stats* character ) {
 
 void init_enemy( character_stats* character ) {
     character->agility  = clamp(cpct_rand(), 10, 80);
-    character->energy   = clamp(cpct_rand(), 50, 90);
-    character->attack   = 20;
-    character->defense  = 10;
+    character->energy   = clamp(cpct_rand(), 10, 50);
+    character->attack   = clamp(cpct_rand(), 1, 15);
+    character->defense  = clamp(cpct_rand(), 8, 12);
     strcpy(character->name, "Mutard");
     character->defending=false;
 }

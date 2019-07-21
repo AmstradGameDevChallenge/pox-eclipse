@@ -71,8 +71,30 @@ void start_menu_state(){
     game_state = EXPLORATION;
 }
 
+bool player_wins(character_stats* enemy) {
+    if ( is_dead(enemy) ) {
+        println("Your opponent falls dead \r\n on the floor.\r\nThis time, you won!");
+        remove_enemy();
+        game_state = EXPLORATION;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+bool enemy_wins(character_stats* player) {
+    if ( is_dead(player) ) {
+        println("You are severely injuried.\r\n You fall unconscious and\r\nyour rival kills you!");
+        game_state = ENDED;
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 void combat_state() {
-    bool fighting = true;
     character_stats *player = &(world.player);
     character_stats *enemy = get_enemy();
 
@@ -82,34 +104,25 @@ void combat_state() {
     // Print stats
     print_stats(player);
     print_stats(enemy);
-    printf("A - Attack. D - Defend\r\n");
     player->defending = false;
     enemy->defending = false;
 
     if (player->agility > enemy->agility){
         println("Your agility allows you act earlier!");
-        player_action(player, enemy);
-        enemy_action(player, enemy);                
+        player_action(player, enemy);  
+        if (!player_wins(enemy)) {
+            enemy_action(player, enemy);
+            enemy_wins(player);
+        }    
     }
     else {            
         println("Enemy is faster than you!");
         enemy_action(player, enemy);
-        player_action(player, enemy);
+        if (!enemy_wins(player)) {
+            player_action(player, enemy);
+            player_wins(enemy);
+        }   
     }
-    
-    if ( is_dead(player) ) {
-        println("You are severely injuried.\r\n You fall unconscious and\r\nyour rival kills you!");
-        fighting = false;
-        game_state = ENDED;
-    }
-    else {
-        if ( is_dead(enemy) ) {
-            println("Your last blow makes your enemy\r\nwalk back some steps.\r\nThen falls dead on the floor.");                
-            fighting = false;
-            remove_enemy();
-            game_state = EXPLORATION;
-        }     
-    }   
 }
 
 void exploration_state() {
@@ -118,8 +131,8 @@ void exploration_state() {
     // Print stats
     putchar(12);
     print_header();
-    print_stats(player);    
-    printf("O, P, Q, A - Move. R - Rest. \r\n");
+    print_stats(player);        
+    world_print_map();
 
     player_explore_action(player);
 }
@@ -130,7 +143,7 @@ void endgame_state() {
 }
 
 void print_header() {
-    printf("Location: %d %d\r\n", world.player_pos.x, world.player_pos.y);
+    printf("Location: %d> %d^\r\n", world.player_pos.lon, world.player_pos.lat);
 }
 
 
@@ -167,7 +180,10 @@ void player_explore_action(character_stats *player)
     u8 command_keys_len = sizeof(command_keys)/sizeof(command_keys[0]);
     u8 energy_gained = 0;    
     bool moved = false;
-    cpct_keyID key = key_pressed(command_keys, command_keys_len);
+    cpct_keyID key;
+    
+    println("O, P, Q, A - Move. R - Rest.");
+    key = key_pressed(command_keys, command_keys_len);
     switch(key) {
         case(Key_R): {
             println("You rest for some time...");
@@ -216,7 +232,8 @@ void player_action(character_stats *player, character_stats *enemy)
     u8 command_keys_len = 2;
     cpct_keyID key;
 
-    println("Press key for next move...");
+    println("Press key for next action...");
+    println("A - Attack. D - Defend");
     
     key = key_pressed(command_keys, command_keys_len);
     switch( key ) {

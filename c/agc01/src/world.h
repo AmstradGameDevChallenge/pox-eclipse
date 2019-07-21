@@ -12,8 +12,8 @@
 #define CONTENT_CLUE        4
 
 typedef struct {
-    i8 x;
-    i8 y;
+    u8 lon;
+    u8 lat;
 } location;
 
 typedef struct {
@@ -23,6 +23,8 @@ typedef struct {
     location player_pos;    
 } game_world;
 
+void world_print_map();
+
 void init_world( void );
 void destroy_world( void );
 
@@ -31,10 +33,10 @@ void spawn_enemy( void );
 character_stats *get_enemy( void );
 void remove_enemy( void );
 
-u8 zone_content(i8 x, i8 y);
+u8 zone_content(u8 x, u8 y);
 
 bool move_player(i8 x_mov, i8 y_mov);
-bool move_player_to(i8 pos_x, i8 pos_y);
+bool move_player_to(u8 pos_x, u8 pos_y);
 
 extern game_world world;
 
