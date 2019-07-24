@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "util.h"
+#include "screen_utils.h"
 #include "world.h"
 
 typedef enum game_states {
@@ -21,6 +22,7 @@ typedef enum game_states {
 };
  
 enum game_states game_state;
+
 void start_menu_state(void);
 void combat_state(void);
 void exploration_state(void);
@@ -150,7 +152,8 @@ void print_header() {
 void print_splash()
 {
     //COLS:  1234567890123456789012345678901234567890
-    putchar(12);
+    scnclr();
+
     println("POX ECLIPSE");
     println("===========");
     println("Welcome to the end of the world!");
