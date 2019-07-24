@@ -39,7 +39,8 @@ void control_max_min_energy(character_stats *character);
 
 
 
-void main(void) {          
+void main(void) {         
+
     game_state = START_MENU;
     while (true) {
         switch( game_state ) {
@@ -60,7 +61,6 @@ void main(void) {
                 break;
             }
         }
-        wait_key();
     }
 }
 
@@ -69,7 +69,8 @@ void start_menu_state(){
     // Let's start!
     init_world();
     print_splash();
-    
+    wait_key();
+    scnclr();
     game_state = EXPLORATION;
 }
 
@@ -78,6 +79,8 @@ bool player_wins(character_stats* enemy) {
         println("Your opponent falls dead \r\n on the floor.\r\nThis time, you won!");
         remove_enemy();
         game_state = EXPLORATION;
+        wait_key();
+        scnclr();
         return true;
     }
     else {
@@ -89,6 +92,8 @@ bool enemy_wins(character_stats* player) {
     if ( is_dead(player) ) {
         println("You are severely injuried.\r\n You fall unconscious and\r\nyour rival kills you!");
         game_state = ENDED;
+        wait_key();
+        scnclr();
         return true;
     }
     else {
@@ -101,7 +106,7 @@ void combat_state() {
     character_stats *enemy = get_enemy();
 
     // CLS
-    putchar(12);
+    scnclr();
 
     // Print stats
     print_stats(player);
@@ -131,7 +136,7 @@ void exploration_state() {
     character_stats *player = &(world.player);
 
     // Print stats
-    putchar(12);
+
     print_header();
     print_stats(player);        
     world_print_map();
@@ -145,6 +150,8 @@ void endgame_state() {
 }
 
 void print_header() {
+    fill(1,1, 1, 40, ' ');
+    locate_at(1, 1);
     printf("Location: %d> %d^\r\n", world.player_pos.lon, world.player_pos.lat);
 }
 
@@ -173,8 +180,8 @@ void print_splash()
 
 void println(char *string)
 {
-    printf(string); 
-    printf("\r\n");
+    puts(string); 
+    putchar('\r');
 }
 
 void player_explore_action(character_stats *player)
@@ -184,12 +191,12 @@ void player_explore_action(character_stats *player)
     u8 energy_gained = 0;    
     bool moved = false;
     cpct_keyID key;
-    
-    println("O, P, Q, A - Move. R - Rest.");
+    fill(20,1, 4, 40, ' ');
+    print_at(20, 1, "O, P, Q, A - Move. R - Rest.");
     key = key_pressed(command_keys, command_keys_len);
     switch(key) {
         case(Key_R): {
-            println("You rest for some time...");
+            print_at(21, 1,"You rest for some time...");
             energy_gained = max(0, min(cpct_rand(), 10));
             player->energy += energy_gained;
             control_max_min_energy(player);
@@ -218,13 +225,15 @@ void player_explore_action(character_stats *player)
     }
 
     if (moved) {
-        println("You explore the zone...");
+        print_at(21, 1,"You explore the zone...");
         if (enemies_near()) {
-            println("And you are attacked!!!");
+            print_at(22, 1,"And you are attacked!!!");
             game_state = COMBAT;    
+            wait_key();
+            scnclr();
         }
         else {
-            println("Nothing found");
+            print_at(22, 1,"Nothing found");
         }
     }
 }

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "character.h"
 #include "util.h"
+#include "screen_utils.h"
 
 bool is_dead( character_stats *stats ) {
     return stats->energy <= 0;
@@ -27,5 +28,6 @@ void init_enemy( character_stats* character ) {
 }
 
 void print_stats( character_stats* character ) {
+    locate_at(2, 1);
     printf("Name: %s (HP:%d) (A:%d) (D:%d)\r\n", character->name, character->energy, character->attack, character->defense);
 }

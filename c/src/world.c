@@ -45,9 +45,8 @@ void world_print_map() {
     u8 player_lon = world.player_pos.lon;
     u8 player_lat = world.player_pos.lat;
     srand(0);
-    locate_at(5,5);
     for (u8 lat = MIN_LAT; lat <= MAX_LAT; ++lat  ) {
-        locate_at(5+lat, 5);
+        locate_at(4+lat, 5);
         for (u8 lon = MIN_LON; lon <= MAX_LON; ++lon  ) {
             int scenery = rand();
             if (player_lat == lat && player_lon == lon) {

@@ -1,6 +1,8 @@
-#include "util.h"
+#include <stdbool.h>
 #include <cpctelera.h>
 #include <stdbool.h>
+#include "util.h"
+#include "screen_utils.h"
 
 
 cpct_keyID INVALID_KEY = 255;
@@ -65,7 +67,7 @@ cpct_keyID key_pressed(cpct_keyID valid_keys[], u8 valid_keys_len) {
 }
 
 void wait_key() {
-    println("PRESS ANY KEY TO CONTINUE");
+    print_at(24, 1, "PRESS ANY KEY TO CONTINUE");
     do {
         cpct_scanKeyboard();
     } while ( !cpct_isAnyKeyPressed() );
